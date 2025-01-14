@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://c3p5b57fxspcj"]
+
+[ext_resource type="Script" path="res://Scripts/Controller.cs" id="1_64hvn"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_likky"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_om3rv"]
+material = SubResource("StandardMaterial3D_likky")
+height = 1.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_8ot7q"]
+
+[node name="Player" type="RigidBody3D"]
+script = ExtResource("1_64hvn")
+speed = 20.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_om3rv")
+skeleton = NodePath("../CollisionShape3D")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_8ot7q")
