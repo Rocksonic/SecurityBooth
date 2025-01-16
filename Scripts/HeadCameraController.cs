@@ -7,7 +7,6 @@ public partial class HeadCameraController : Node3D
     [Export] private Node3D head;
     [Export] public float mouseSensitivity = 1.0f;
     [Export] public float maxVerticalAngle = 90f;
-    private float horizontalRotation = 0.0f;
     private float verticalRotation = 0.0f;
 
 	// Called when the node enters the scene tree for the first time.
@@ -32,11 +31,12 @@ public partial class HeadCameraController : Node3D
         if (@event is InputEventMouseMotion mouseMovement)
         {
             head.RotateY(-mouseMovement.Relative.X * mouseSensitivity);
+            //head.RotateX(mouseMovement.Relative.Y * mouseSensitivity);
             verticalRotation += -mouseMovement.Relative.Y * mouseSensitivity;
         }
 
         Mathf.Clamp(verticalRotation, Mathf.DegToRad(-maxVerticalAngle), Mathf.DegToRad(maxVerticalAngle));
-        camera.Rotation = new Vector3(verticalRotation, 0, 0);
+        head.Rotation = new Vector3(verticalRotation, head.Rotation.Y, 0);
     }
 
 }
