@@ -1,10 +1,11 @@
-[gd_scene load_steps=13 format=3 uid="uid://cuh0rcgxk5bf2"]
+[gd_scene load_steps=14 format=3 uid="uid://cuh0rcgxk5bf2"]
 
 [ext_resource type="PackedScene" uid="uid://dwpm18wu2r6hv" path="res://Prefabs/floor.tscn" id="1_ongbi"]
 [ext_resource type="Script" path="res://Scripts/CharacterController.cs" id="2_tjngu"]
 [ext_resource type="Texture2D" uid="uid://b8cgawl5wgq8j" path="res://Sprites/HAND.png" id="3_0ndee"]
 [ext_resource type="Script" path="res://Scripts/HeadCameraController.cs" id="3_86vot"]
 [ext_resource type="Script" path="res://Scripts/ThrowDice.cs" id="4_15e1n"]
+[ext_resource type="Script" path="res://DebugName.cs" id="5_h2edj"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_fqvd8"]
 
@@ -36,27 +37,35 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
 script = ExtResource("2_tjngu")
 head = NodePath("Head")
 
-[node name="DiceThrower" type="Node" parent="CharacterController/CharacterBody3D" node_paths=PackedStringArray("body", "dice")]
-script = ExtResource("4_15e1n")
-body = NodePath("..")
-dice = NodePath("../../../DICE")
-throwForce = 500.0
-
 [node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterController/CharacterBody3D"]
 mesh = SubResource("CapsuleMesh_fqvd8")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterController/CharacterBody3D"]
 shape = SubResource("CapsuleShape3D_btaef")
 
-[node name="Head" type="Node3D" parent="CharacterController/CharacterBody3D" node_paths=PackedStringArray("head")]
+[node name="Head" type="Node3D" parent="CharacterController/CharacterBody3D" node_paths=PackedStringArray("camera", "head")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
 script = ExtResource("3_86vot")
+camera = NodePath("Camera3D")
 head = NodePath(".")
 mouseSensitivity = 0.002
 
 [node name="Hand" type="Sprite3D" parent="CharacterController/CharacterBody3D/Head"]
 transform = Transform3D(0.08, 0, 0, 0, 0.08, 0, 0, 0, 0.8, 0.207465, -0.0662856, -0.53668)
 texture = ExtResource("3_0ndee")
+
+[node name="RayCast3D" type="RayCast3D" parent="CharacterController/CharacterBody3D/Head/Hand" node_paths=PackedStringArray("rayCast", "throwDice")]
+transform = Transform3D(12.5, 0, 0, 0, -5.46392e-07, -12.5, 0, 1.25, -5.46392e-08, -2.59331, 0.828568, 0.67085)
+target_position = Vector3(0, -50, 0)
+collision_mask = 16
+script = ExtResource("5_h2edj")
+rayCast = NodePath(".")
+throwDice = NodePath("../DiceThrower")
+
+[node name="DiceThrower" type="Node" parent="CharacterController/CharacterBody3D/Head/Hand" node_paths=PackedStringArray("body")]
+script = ExtResource("4_15e1n")
+body = NodePath("../../..")
+throwForce = 100.0
 
 [node name="Camera3D" type="Camera3D" parent="CharacterController/CharacterBody3D/Head"]
 keep_aspect = 0
@@ -87,6 +96,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, -4)
 
 [node name="DicePhysics" type="RigidBody3D" parent="DICE"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+collision_layer = 16
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DICE/DicePhysics"]
 shape = SubResource("BoxShape3D_scc6t")
